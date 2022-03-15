@@ -86,12 +86,12 @@ def demo_text():
 
 
 # reading data from external JDBC (Postgres)
-def demo_postgres():
-    driver = "org.postgresql.Driver"
-    url = "jdbc:postgresql://localhost:5432/rtjvm"
-    user = "docker"
-    password = "docker"
+driver = "org.postgresql.Driver"
+url = "jdbc:postgresql://localhost:5432/rtjvm"
+user = "docker"
+password = "docker"
 
+def demo_postgres():
     employees_df = spark.read. \
         format("jdbc"). \
         option("driver", driver). \
@@ -113,6 +113,35 @@ Exercise: read the movies DF, then write it as
 Exercise #2: find a way to read the people-1m dataFrame.
 Then write it as JSON.
 """
+def writing_movies():
+    movies_df = spark.read.json("../data/movies")
+
+    # tab-separated
+    movies_df.write.\
+        format("csv").\
+        option("sep", "\t").\
+        save("../data/movies_tsv")
+
+    # parquet
+    movies_df.write.save("../data/movies_parquet")
+
+    # table in the DB
+    movies_df.write.\
+        format("jdbc").\
+        option("driver", driver). \
+        option("url", url). \
+        option("user", user). \
+        option("password", password). \
+        option("dbtable", "public.movies").\
+        save()
+
+def demo_read_people():
+    people_df = spark.read.\
+        format("csv").\
+        option("sep", ":").\
+        load("../data/people-1m")
+
+    people_df.write.json("../data/people-json")
 
 if __name__ == '__main__':
-    demo_postgres()
+    demo_read_people()
