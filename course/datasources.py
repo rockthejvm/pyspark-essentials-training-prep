@@ -7,6 +7,7 @@ spark = SparkSession. \
     appName("Data Sources"). \
     master("local"). \
     config("spark.jars", "../jars/postgresql-42.2.19.jar"). \
+    config("spark.sql.legacy.timeParserPolicy", "LEGACY"). \
     getOrCreate()
 
 
@@ -144,4 +145,4 @@ def demo_read_people():
     people_df.write.json("../data/people-json")
 
 if __name__ == '__main__':
-    demo_read_people()
+    demo_csv()
