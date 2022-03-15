@@ -51,6 +51,16 @@ def demo_manual_schema():
     - print its schema
     - movies.count()
 """
+def df_exercise():
+    movies_df = spark.read. \
+        format("json"). \
+        option("inferSchema", "true"). \
+        load("../data/movies")
+
+    movies_df.show()
+    movies_df.printSchema()
+    print(movies_df.count()) # 3201
+
 
 if __name__ == '__main__':
-    demo_manual_schema()
+    df_exercise()
