@@ -80,5 +80,51 @@ Exercises
     Bonus: use multiple versions
 """
 
+# 1
+movies_df = spark.read.format("json").option("inferSchema", "true").load("../data/movies")
+# title, genre, release date, IMDB rating
+movies_ex1 = movies_df.selectExpr("Title", "Major_Genre", "Release_Date", "IMDB_Rating")
+movies_ex1_v2 = movies_df.select("Title", "Major_Genre", "Release_Date", "IMDB_Rating")
+movies_ex1_v3 = movies_df.select(col("Title"), col("Major_Genre"), col("Release_Date"), col("IMDB_Rating"))
+movies_ex1_v4 = movies_df.select(expr("Title"), expr("Major_Genre"), expr("Release_Date"), expr("IMDB_Rating"))
+
+# 2
+movies_profit_df = movies_df.withColumn("Total_Profit", expr("US_DVD_Sales + US_Gross + Worldwide_Gross"))
+movies_profit_df_erick = movies_df.select(
+    "Title",
+    "US_Gross",
+    "Worldwide_Gross",
+    "US_DVD_Sales",
+    expr("US_Gross + Worldwide_Gross + US_DVD_Sales as Total_Profit")
+)
+movies_profit_df_v2 = movies_df.selectExpr(
+    "Title",
+    "US_Gross",
+    "Worldwide_Gross",
+    "US_DVD_Sales",
+    "US_Gross + Worldwide_Gross + US_DVD_Sales as Total_Profit"
+)
+movies_profit_df_v3 = movies_df.select(
+    col("Title"),
+    col("US_Gross"),
+    col("Worldwide_Gross"),
+    col("US_DVD_Sales"),
+    expr("US_Gross + Worldwide_Gross + US_DVD_Sales as Total_Profit")
+)
+# mix & match
+
+# 3
+at_least_mediocre_comedies_df = movies_df.\
+    filter("Major_Genre = 'Comedy' and IMDB_Rating > 6").\
+    select("Title", "IMDB_Rating")
+
+at_least_mediocre_comedies_df_jackson = movies_df.\
+    filter((col("IMDB_rating") > 6) & (upper(col("Major_Genre")) == "COMEDY"))
+
+at_least_mediocre_comedies_df_daniel = movies_df.\
+    filter(col("IMDB_rating") > 6).\
+    filter(col("Major_Genre") == "Comedy")
+
+
 if __name__ == '__main__':
-    origins_df.show()
+    at_least_mediocre_comedies_df.show()
