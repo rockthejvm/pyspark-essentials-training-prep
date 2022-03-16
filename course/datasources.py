@@ -85,7 +85,20 @@ def demo_text():
     text_df = spark.read.text("../data/lipsum")
     text_df.show()
 
-
+"""
+Docker commands:
+    (within the root dir of the project) Start the Postgres DB: 
+        docker-compose up
+    (in a terminal anywhere) Connect to the Postgres DB: 
+        docker exec -it postgres bash
+        psql -U docker
+        
+    Postgres commands:
+        \c rtjvm - connect to the database "rtjvm" (the one I made for the course)
+        \dt - describe all the tables
+        \t (tablename) - describe a single table
+        (regular sql queries)
+"""
 # reading data from external JDBC (Postgres)
 driver = "org.postgresql.Driver"
 url = "jdbc:postgresql://localhost:5432/rtjvm"
