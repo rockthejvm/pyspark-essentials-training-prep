@@ -10,7 +10,6 @@ spark = SparkSession. \
 # support DF
 movies_df = spark.read.json("../data/movies")
 
-
 # counting
 all_movies_count_df = movies_df.selectExpr("count(*)")
 genres_count_df = movies_df.select(count(col("Major_Genre"))) # counts all values which are not null
@@ -40,6 +39,40 @@ rt_stats_df = movies_df.select(
     stddev(col("Rotten_Tomatoes_Rating"))
 )
 
+# Grouping
+# nulls are also considered
+count_by_genre_df = movies_df.\
+    groupBy(col("Major_Genre")).\
+    count()
+
+avg_rating_by_genre_df = movies_df.\
+    groupBy(col("Major_Genre")).\
+    avg("IMDB_Rating")
+
+# multiple aggregations
+aggregations_by_genre_df = movies_df.\
+    groupBy(col("Major_Genre")).\
+    agg(
+        # use strings here for column names
+        count("*").alias("N_Movies"),
+        avg("IMDB_Rating").alias("Avg_Rating")
+    )
+
+# sorting
+best_movies_df = movies_df.orderBy(col("IMDB_Rating").desc())
+# sorting works for numerical, strings (lexicographic), dates
+
+# put nulls first or last
+proper_worst_movies_df = movies_df.orderBy(col("IMDB_Rating").asc_nulls_last())
+
+"""
+Exercises
+    1. Sum up ALL the profits of ALL the movies in the dataset
+    2. Count how many distinct directors we have
+    3. Show the mean+stddev for US gross revenue
+    4. Compute the average IMDB rating + average US gross PER DIRECTOR
+    5. Show the average difference between IMDB rating and Rotten Tomatoes rating
+"""
 
 if __name__ == '__main__':
-    rt_stats_df.show()
+    aggregations_by_genre_df.show()
