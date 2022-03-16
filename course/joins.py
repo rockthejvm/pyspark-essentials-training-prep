@@ -42,6 +42,16 @@ guitar_players_df.join(bands_df, join_condition, "left_semi")
 # left anti joins = everything in the LEFT DF for which there is __NO__ row in the right DF for which the condition is true
 guitar_players_df.join(bands_df, join_condition, "left_anti").show()
 
+# joins are WIDE transformations**
+
+"""
+Exercises
+Read the tables in the Postgres database: employees, salaries, dept_emp
+1. show all employees and their max salary over time
+2. show all employees who were never managers
+3. for every employee, find the difference between their salary (current/latest) and 
+    the max salary of their job/department
+"""
 
 if __name__ == '__main__':
     pass
