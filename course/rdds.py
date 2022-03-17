@@ -71,7 +71,33 @@ sum_prices = aapl_stocks_rdd.reduce(lambda x,y: x + y) # can use ANY Python func
 
 # grouping
 grouped_stocks_rdd = stocks_rdd_v3.groupBy(lambda row: row.company) # can use ANY grouping criterion as a Python function
-# grouping is expensive
+# grouping is expensive - involves a shuffle
+
+# partitioning
+repartitioned_stocks_rdd = stocks_rdd_v3.repartition(30) # involves a shuffle
+
+"""
+Exercises
+    1. Read the movies dataset as an RDD
+    2. Show the distinct genres as an RDD
+    3. Print all the movies in the Drama genre with IMDB rating > 6
+"""
+
+# 1
+movies_df = spark.read.json("../data/movies")
+movies_rdd = movies_df.rdd
+
+# 2
+genres_rdd = movies_rdd.map(lambda row: row.Major_Genre).distinct()
+# alternative
+movies_genre_df = movies_df.selectExpr("Major_Genre")
+movies_genre_rdd = movies_genre_df.rdd
+movies_genre_rdd.distinct()
+
+# 3
+decent_dramas = movies_rdd.filter(lambda row: row.IMDB_Rating != None).\
+    filter(lambda row: (row.IMDB_Rating > 6) & (row.Major_Genre == "Drama")).\
+    map(lambda row: row.Title)
 
 if __name__ == '__main__':
     print(company_names_rdd.collect())
