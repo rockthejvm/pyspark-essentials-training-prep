@@ -78,8 +78,19 @@ Exercise
 def get_car_names():
     return ["Volkswagen", "Mercedes-Benz", "Ford"]
 
+# v1 - regexes
+regexString = "|".join(get_car_names()) # Volkswagen|Mercedes-Benz|Ford
+cars_interest_df = cars_df.select(
+        col("Name"),
+        regexp_extract(lower(col("Name")), regexString, 0).alias("regex_extract")
+    ).filter(col("regex_extract") != "").orderBy(col("regex_extract"))
 
+# v2 - contains
+from functools import reduce
 
+car_name_filters = [col("Name").contains(car_name.lower()) for car_name in get_car_names()]
+big_filter = reduce(lambda filter1, filter2: filter1 | filter2, car_name_filters)
+filtered_cars = cars_df.filter(big_filter)
 
 if __name__ == '__main__':
-    demo_regexes()
+    filtered_cars.show()
