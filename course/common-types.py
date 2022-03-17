@@ -68,5 +68,18 @@ def demo_regexes():
     )
     vw_new_name_df.show()
 
+"""
+Exercise
+    Filter the cars DF, return all cars whose name contains either element of the list
+    - contains function
+    - regexes
+"""
+
+def get_car_names():
+    return ["Volkswagen", "Mercedes-Benz", "Ford"]
+
+
+
+
 if __name__ == '__main__':
     demo_regexes()
