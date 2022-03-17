@@ -19,7 +19,7 @@ american_cars_df = cars_df.filter(col("Origin") == "USA").select(col("Name"))
 american_cars_df_v2 = spark.sql("select Name from cars where Origin = 'USA'") # returns a DF
 
 # store DFs as Spark tables (files known to Spark)
-cars_df.write.mode("overwrite").saveAsTable("cars")
+# cars_df.write.mode("overwrite").saveAsTable("cars")
 
 """
 Exercises: replicate the exercises in the Joins lesson with Spark SQL.
@@ -51,6 +51,45 @@ salaries_df = read_table("salaries")
 dept_managers_df = read_table("dept_manager")
 dept_emp_df = read_table("dept_emp")
 departments_df = read_table("departments")
+
+# save table names
+employees_df.createOrReplaceTempView("employees")
+salaries_df.createOrReplaceTempView("salaries")
+dept_managers_df.createOrReplaceTempView("dept_manager")
+dept_emp_df.createOrReplaceTempView("dept_emp")
+departments_df.createOrReplaceTempView("departments")
+
+# 1
+# Erick
+max_salaries = spark.sql("""
+    SELECT emp.emp_no, max(salary) from employees emp join salaries sal 
+    on emp.emp_no = sal.emp_no 
+    group by 1
+    """)
+max_salaries.show()
+
+# Ryan
+max_salary_df = spark.sql("""
+    select emp_no, max(salary) from employees join salaries using(emp_no) group by 1
+    """)
+
+# 2
+# Ryan
+never_managers_df = spark.sql("""
+    select emp_no from employees e 
+    left join dept_managers d using(emp_no) 
+    where d.emp_no is NULL group by 1
+    """)
+
+# Erick
+never_manager = spark.sql("""
+    SELECT emp.emp_no FROM employees emp 
+    WHERE emp.emp_no NOT IN ( SELECT distinct emp_no from dept_manager ) 
+    """)
+never_manager.show()
+
+# Jill
+not_managers = spark.sql("select emp_no from employees except select emp_no from dept_manager")
 
 
 if __name__ == '__main__':
