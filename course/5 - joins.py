@@ -134,5 +134,9 @@ diff_in_salary_df = employees_df.\
     selectExpr("first_name", "last_name", "emp_no", "dept_no", "max_salary - salary as salary_diff")
 
 
+from time import sleep
+
+
 if __name__ == '__main__':
     diff_in_salary_df.show()
+    sleep(1000)

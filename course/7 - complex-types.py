@@ -32,8 +32,8 @@ no_release_known_df = movies_with_release_dates_df.filter(col("Actual_Release").
 
 # hypothetical
 movies_with_2_formats = movies_df.select(col("Title"), col("Release_Date")).\
-    withColumn("Date_F1", to_date(col("Release_Date"), "dd-MM-YYYY")).\
-    withColumn("Date_F2", to_date(col("Release_Date"), "YYYY-MM-dd")).\
+    withColumn("Date_F1", to_date(col("Release_Date"), "dd-MM-yyyy")).\
+    withColumn("Date_F2", to_date(col("Release_Date"), "yyyy-MM-dd")).\
     withColumn("Actual_Date", coalesce(col("Date_F1"), col("Date_F2")))
 
 # structures

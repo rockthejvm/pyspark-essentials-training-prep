@@ -62,5 +62,10 @@ def df_exercise():
     print(movies_df.count()) # 3201
 
 
+# transformations (descriptions of computations) vs actions (force the evaluation of a DF/RDD)
+# 1 action => 1 job
+# 1 job => many stages
+# 1 stage => many tasks
+
 if __name__ == '__main__':
     df_exercise()
